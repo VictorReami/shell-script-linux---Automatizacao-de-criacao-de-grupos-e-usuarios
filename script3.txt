@@ -1,0 +1,304 @@
+#! /bin/bash
+
+#laco de repeticao infinito
+while true 1 == 1 
+do
+
+	#Menu de opcao
+        echo ""
+        echo "Selecione uma opcao"
+        echo "1 - Cria ou excluir usuario"
+	echo "2 - Cria ou excluir Grupo"
+	echo "3 - Adicionar ou remover usuario do grupo"
+        echo "0 - Sair"
+
+	#ler a opcao digitada
+        read opcao
+	clear
+
+	#executar a funcao conforme a opcao desejada
+        case $opcao in
+                1)
+			#lacoa de repeticao infinita
+			while true 1 == 1
+			do
+				echo ""
+				echo "Selecione uma opcao"
+				echo "1 - Criar usuario"
+				echo "2 - Excluir usuario"
+				echo "3 - Visualizar todos usuarios"
+				echo "0 - Voltar ao menu principal"
+				#ler a opcao digitada
+				read opcao_case1
+				clear
+
+				#executar a funcao conforme a opcao desejada
+				case $opcao_case1 in
+					#ciar um novo usuario
+					1)
+						#solicita o nome de um novo usuario
+						echo ""
+						echo "Digite o nome do novo usuario."
+						read novo_usuario
+
+						#verifica se o usuario ja existe
+						if [ $(getent passwd $novo_usuario) ]; then
+							echo ""
+							echo "Usuario ja existe."
+						else
+							#adiciona o novo usuario
+							adduser $novo_usuario
+							echo ""
+							echo "Usuario adicionado."
+						fi
+					;;
+
+					#excluir usuario
+					2)
+						#solicitando nome do usuario
+						echo ""
+						echo "Digite o nome do usuario que deseja excluir."
+						read excluir_usuario
+
+						#verificando se o usuario existe
+						if [ ! $(getent passwd $excluir_usuario ) ]; then
+							echo ""
+							echo "Usuario nao exisite."
+						else
+							#deletando usuario
+							userdel $excluir_usuario
+							echo ""
+							echo "Usuario excluido."
+						fi
+					;;
+
+					#visualizar todos os usuarios
+					3)
+						#mostrando todos os usuario
+						cut -d : -f 1 /etc/passwd
+						echo ""
+						read -rsp $"Pressione enter para continuar"
+						clear
+					;;
+
+					#voltar ao menu principal
+					0)
+			                        clear
+			                        break
+			                ;;
+
+					#opcao invalida
+			                *)
+			                        echo ""
+			                        echo "Opcao invalida!"
+						read -rsp $"Pressione enter para continuar"
+						clear
+			                ;;
+
+				esac
+			done
+		;;
+
+		#criar/excluir grupo
+		2)
+			#lacoa de repeticao infinito
+			while true 1 == 1
+                        do
+				#menu de opcoes
+                                echo ""
+                                echo "Selecione uma opcao"
+                                echo "1 - Criar Grupo"
+                                echo "2 - Excluir Grupo"
+                                echo "3 - Visualizar todos grupos"
+                                echo "0 - Voltar ao menu principal"
+
+				#ler a opcao digitada
+                                read opcao_case2
+				clear
+
+				#executar a funcao conrforme a opcao desejada
+				case $opcao_case2 in
+					1)
+						#solicitando o nome do grupo
+						echo ""
+						echo "Digite o nome do novo grupo"
+						read novo_grupo
+
+						#verificando se o grupo ja existe
+						if [ $(getent group $novo_grupo) ]; then
+							echo ""
+							echo "Grupo ja exisite"
+						#criando o grupo
+						else
+							groupadd $novo_grupo
+							echo ""
+							echo "Grupo criado" 
+						fi
+					;;
+
+					#excluir grupo
+					2)
+
+						#solicitando o nome do grupo
+						echo ""
+						echo "Digite o nome do grupo que deseja excluir"
+						read excluir_grupo
+
+						#verificando se o grupo existe
+						if [ ! $(getent group $excluir_grupo ) ]; then
+                                                        echo ""
+                                                        echo "Grupo nao exisite."
+                                                else
+							#excluindo grupo
+                                                        groupdel $excluir_grupo
+                                                        echo ""
+                                                        echo "Grupo excluido."
+                                                fi
+
+					;;
+
+					#visualizar todos os grupo
+					3)
+						#mostrando todos os grupos
+						cat /etc/group | cut -d: -f1
+                                                echo ""
+                                                read -rsp $"Pressione enter para continuar"
+                                                clear
+					;;
+
+
+					#voltando para o menu principal
+					0)
+                                                clear
+                                                break
+                                        ;;
+
+					#opcao invalida
+                                        *)
+                                                echo ""
+                                                echo "Opcao invalida!"
+                                                read -rsp $"Pressione enter para continuar"
+                                                clear
+                                        ;;
+
+				esac
+			done
+
+		;;
+
+		#Adicionar ou remover usuario do grupo
+		3)
+			#laco de repeticao infinito
+			while true 1 == 1
+                        do
+				#menu de opcoes
+                                echo ""
+                                echo "Selecione uma opcao"
+                                echo "1 - Adicionar usuario a um grupo"
+                                echo "2 - Remover usuario de um grupo"
+                                echo "0 - Voltar ao menu principal"
+
+				#ler opcao digitada
+                                read opcao_case3
+				clear
+
+				#executar a funcao conforme a opcao desejada
+				case $opcao_case3 in
+					#adicionar usuario a um grupo
+					1)
+						#solicitando o nome do usuario
+						echo ""
+						echo "Digite o nome do usuario"
+						read usuario_adicionar
+
+						#verificando se o usuario existe
+						if [ ! $(getent passwd $usuario_adicionar) ]; then
+                                                        echo ""
+                                                        echo "Usuario nao existe!"
+                                                else
+							#solicitando o nome do grupo em qual deseja adiconar o usuario
+                                                    	echo ""
+							echo "Digite em qual grupo deseja adicionar"
+							read grupo_adicionar
+
+							#verificando se o grupo existe
+							if [ ! $(getent group $grupo_adicionar) ]; then
+								echo ""
+								echo "Grupo nao existe!"
+							else
+								#adicionando o usuario ao grupo desejado
+								adduser $usuario_adicionar $grupo_adicionar
+								echo ""
+								echo "usuario $usuario_adicionar adicionado ao grupo $grupo_adicionar!"
+							fi
+						fi
+					;;
+
+					#Remover usuario de um grupo
+					2)
+						#solicitando o nome do usuario
+						echo ""
+						echo "Digite o nome do usuario que deseja remover"
+						read usuario_remover
+
+						#verificando seo usuario existe
+						if [ ! $(getent passwd $usuario_remover) ]; then
+							echo ""
+							echo "Usuario nao existe."
+						else
+							#solicitando o nome do grupo em qual deseja remover o usuario
+							echo ""
+							echo "Digite o nome do grupo de qual deseja remover"
+							read grupo_remover
+
+							#verificando se o grupo exisite
+							if [ ! $(getent group $grupo_remover) ]; then
+								echo ""
+								echo "Grupo nao existe."
+							else
+								#removendo o usuario do grupo
+								deluser $usuario_remover $grupo_remover
+								echo ""
+								echo "Usuario $usuario_remover removido do grupo $grupo_remover."
+							fi
+						fi
+					;;
+
+					#voltando para o menu principal
+					0)
+                                                clear
+                                                break
+                                        ;;
+
+					#opcao invalida
+                                        *)
+                                                echo ""
+                                                echo "Opcao invalida!"
+                                                sleep 2
+                                                clear
+                                        ;;
+
+				esac
+			done
+
+		;;
+
+		#saindo do script
+		0)
+                        echo ""
+                        echo "Saindo..."
+                        sleep 2
+                        clear
+                        exit
+                ;;
+
+		#opcao invalida
+                *)
+                        echo ""
+                        echo "Opcao invalida!"
+			sleep 2
+			clear
+                ;;
+
+	esac
+done
